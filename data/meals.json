@@ -1,0 +1,11 @@
+// data/meals.json
+[
+    {
+      "day": "Monday",
+      "meals": [
+        { "type": "breakfast", "name": "Oatmeal", "calories": 300 },
+        { "type": "lunch", "name": "Grilled Chicken Salad", "calories": 400 },
+        { "type": "dinner", "name": "Salmon with Vegetables", "calories": 500 }
+      ]
+    }
+  ]

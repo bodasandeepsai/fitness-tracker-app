@@ -1,0 +1,9 @@
+// data/workouts.json
+[
+    {
+      "type": "cardio",
+      "name": "Running",
+      "duration": 30,
+      "calories_burned": 300
+    }
+  ]
