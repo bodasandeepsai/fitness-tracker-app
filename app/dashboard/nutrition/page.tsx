@@ -1,41 +1,49 @@
 "use client";
-import { useEffect, useState } from 'react';
 
-interface Meal {
-  name: string;
-  calories: number;
+import { useState } from "react";
+import UserMetricsForm from "../components/UserMetricsForm";
+import MealPlanComponent from "./MealPlanComponent";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+interface UserMetrics {
+  weight: number;
+  height: number;
+  age: number;
+  activityLevel: string;
+  goals: string[];
 }
 
-export default function Nutrition() {
-  const [mealPlan, setMealPlan] = useState<Meal[]>([]);
+export default function NutritionPage() {
+  const [userMetrics, setUserMetrics] = useState<UserMetrics | null>(null);
 
-  useEffect(() => {
-    const fetchMealPlan = async () => {
-      const response = await fetch('/api/generateMealPlan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ bmi: 22, activityLevel: 'moderate', goals: 'weight_loss' }),
-      });
-      const data = await response.json();
-      console.log("API Response:", data);
-      setMealPlan(data.mealPlan);
-    };
-  
-    fetchMealPlan();
-  }, []);
+  const handleMetricsSubmit = (data: UserMetrics) => {
+    setUserMetrics(data);
+  };
 
   return (
-    <div>
-      <h2>Meal Plan</h2>
-      <ul>
-        {mealPlan.map((meal, index) => (
-          <li key={index}>
-            {meal.name}: {meal.calories} calories
-          </li>
-        ))}
-      </ul>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Nutrition Plan</h2>
+        <p className="text-muted-foreground">
+          Get your personalized meal plan based on your metrics and goals.
+        </p>
+      </div>
+
+      <div className="grid gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Metrics</CardTitle>
+            <CardDescription>Enter your details to generate a personalized meal plan</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <UserMetricsForm onSubmit={handleMetricsSubmit} />
+          </CardContent>
+        </Card>
+
+        {userMetrics && (
+          <MealPlanComponent userMetrics={userMetrics} />
+        )}
+      </div>
     </div>
   );
 }

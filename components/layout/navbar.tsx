@@ -37,7 +37,7 @@ export function Navbar() {
         <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
         </Button>
-        <Button onClick={handleLogout} variant="destructive">
+        <Button onClick={handleLogout} variant="destructive" className="hidden md:block">
           Logout
         </Button>
       </div>

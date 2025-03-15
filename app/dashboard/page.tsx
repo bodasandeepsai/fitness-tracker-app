@@ -1,9 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, TrendingUp, Heart, Brain, Dumbbell, Timer, Flame } from "lucide-react";
-import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import UserMetricsForm from "./components/UserMetricsForm";
+import MealPlanComponent from "./nutrition/MealPlanComponent";
+import WorkoutPlanComponent from "./workouts/WorkoutPlanComponent";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const activityData = [
   { date: '2024-01', calories: 2200, steps: 8000 },
@@ -24,10 +28,15 @@ const workoutData = [
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
+  const [userMetrics, setUserMetrics] = useState(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleMetricsSubmit = (data) => {
+    setUserMetrics(data);
+  };
 
   if (!mounted) return null;
 
@@ -133,6 +142,33 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="grid gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Fitness Plan Generator</CardTitle>
+            <CardDescription>Enter your metrics to generate personalized plans</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <UserMetricsForm onSubmit={handleMetricsSubmit} />
+          </CardContent>
+        </Card>
+
+        {userMetrics && (
+          <Tabs defaultValue="meal" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="meal">Meal Plan</TabsTrigger>
+              <TabsTrigger value="workout">Workout Plan</TabsTrigger>
+            </TabsList>
+            <TabsContent value="meal">
+              <MealPlanComponent userMetrics={userMetrics} />
+            </TabsContent>
+            <TabsContent value="workout">
+              <WorkoutPlanComponent userMetrics={userMetrics} />
+            </TabsContent>
+          </Tabs>
+        )}
       </div>
     </div>
   );

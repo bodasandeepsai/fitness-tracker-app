@@ -1,52 +1,49 @@
 "use client";
-import { useEffect, useState } from 'react';
 
-interface Workout {
-  name: string;
-  duration: number;
+import { useState } from "react";
+import UserMetricsForm from "../components/UserMetricsForm";
+import WorkoutPlanComponent from "./WorkoutPlanComponent";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+interface UserMetrics {
+  weight: number;
+  height: number;
+  age: number;
+  activityLevel: string;
+  goals: string[];
 }
 
-export default function Workouts() {
-  const [workoutPlan, setWorkoutPlan] = useState<Workout[]>([]);
+export default function WorkoutsPage() {
+  const [userMetrics, setUserMetrics] = useState<UserMetrics | null>(null);
 
-  useEffect(() => {
-    const fetchWorkoutPlan = async () => {
-      try {
-        const response = await fetch('/api/generateWorkoutPlan', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ bmi: 22, activityLevel: 'moderate', goals: 'cardio' }),
-        });
-        const data = await response.json();
-        console.log("API Response:", data); // Log the full API response
-        setWorkoutPlan(data.workoutPlan);
-      } catch (error) {
-        console.error("Error fetching workout plan:", error);
-        setWorkoutPlan([]); // Set to empty array on error
-      }
-    };
-  
-    fetchWorkoutPlan();
-  }, []);
-  
+  const handleMetricsSubmit = (data: UserMetrics) => {
+    setUserMetrics(data);
+  };
+
   return (
-    
+    <div className="space-y-6">
       <div>
-        <h2>Workout Plan</h2>
-        {workoutPlan.length > 0 ? (
-          <ul>
-            {workoutPlan.map((workout, index) => (
-              <li key={index}>
-                {workout.name}: {workout.duration} minutes
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No workout plan available.</p>
+        <h2 className="text-3xl font-bold tracking-tight">Workout Plan</h2>
+        <p className="text-muted-foreground">
+          Get your personalized workout routine based on your metrics and goals.
+        </p>
+      </div>
+
+      <div className="grid gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Metrics</CardTitle>
+            <CardDescription>Enter your details to generate a personalized workout plan</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <UserMetricsForm onSubmit={handleMetricsSubmit} />
+          </CardContent>
+        </Card>
+
+        {userMetrics && (
+          <WorkoutPlanComponent userMetrics={userMetrics} />
         )}
       </div>
-    
+    </div>
   );
 }

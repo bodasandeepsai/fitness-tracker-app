@@ -42,10 +42,21 @@ export default function Login() {
     setIsLoading(false);
   };
   
-
-  function handleGoogleLogin(event: MouseEvent<HTMLButtonElement, MouseEvent>): void {
-    throw new Error("Function not implemented.");
-  }
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await signIn('google', {
+        callbackUrl: '/dashboard'
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign in with Google",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Card className="w-full">
@@ -94,8 +105,7 @@ export default function Login() {
 
         <Button
           type="button"
-          variant="outline"
-          className="w-full"
+          className="w-full border"
           onClick={handleGoogleLogin}
           disabled={isLoading}
         >

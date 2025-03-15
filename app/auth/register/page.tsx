@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Activity } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import { signIn } from "next-auth/react";
 
 export default function Register() {
   const router = useRouter();
@@ -73,6 +74,22 @@ export default function Register() {
     setIsLoading(false);
   };
 
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true);
+    try {
+      await signIn('google', {
+        callbackUrl: '/dashboard'
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign up with Google",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardHeader className="space-y-1">
@@ -126,6 +143,25 @@ export default function Register() {
             {isLoading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
+
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
+
+        <Button
+          type="button"
+          className="w-full border"
+          onClick={handleGoogleSignUp}
+          disabled={isLoading}
+        >
+          Sign up with Google
+        </Button>
+
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}
           <Link href="/auth/login" className="text-primary hover:underline">
